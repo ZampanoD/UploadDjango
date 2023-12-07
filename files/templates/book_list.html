@@ -5,9 +5,11 @@
 
   {% block content_header %}
     <h2>Books</h2>
-    <p>
+    {% if request.user.is_staff or request.user.is_superuser %}
+      <p>
       <a href="{% url 'upload_book' %}" class="btn btn-primary">Upload book</a>
     </p>
+    {% endif %}
   {% endblock %}
     <table class="table mb-0">
     <thead>
@@ -17,7 +19,9 @@
         <th>Title</th>
         <th>Author</th>
         <th>Download</th>
+       {% if request.user.is_staff or request.user.is_superuser %}
         <th>Delete</th>
+       {%endif  %}
       </tr>
     </thead>
     <tbody>
@@ -38,12 +42,14 @@
               Download PDF
             </a>
           </td>
+            {% if request.user.is_staff or request.user.is_superuser %}
           <td>
             <form method="post" action="{% url 'delete_book' book.pk %}">
               {% csrf_token %}
               <button type="submit" class="btn btn-danger btn-sm">Delete</button>
             </form>
           </td>
+            {%endif%}
         </tr>
       {% endfor %}
     </tbody>

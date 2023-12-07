@@ -6,12 +6,17 @@ from .forms import BookForm
 from .models import Book
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
+from django.http import HttpResponseRedirect
+from .forms import BookForm
 
 
 class Home(TemplateView):
     template_name = 'home.html'
 
 
+@login_required()
 def upload(request):
     context = {}
     if request.method == 'POST':
@@ -22,11 +27,13 @@ def upload(request):
     return render(request, 'upload.html', context)
 
 
+@login_required()
 def book_list(request):
     books = Book.objects.all()
     return render(request, 'book_list.html', {
         'books': books
     })
+
 
 
 def delete_book(request, pk):
@@ -36,7 +43,10 @@ def delete_book(request, pk):
     return redirect('book_list')
 
 
+@login_required()
 def upload_book(request):
+    if not (request.user.is_staff or request.user.is_superuser):
+        return HttpResponseRedirect('/')
     if request.method == 'POST':
         form = BookForm(request.POST, request.FILES)
         if form.is_valid():
@@ -44,6 +54,7 @@ def upload_book(request):
             return redirect('book_list')
     else:
         form = BookForm()
+
     return render(request, 'upload_book.html', {
         'form': form
     })
@@ -55,12 +66,14 @@ class BookListView(ListView):
     context_object_name = 'books'
 
 
+
 class UploadBookView(CreateView):
     model = Book
     form_class = BookForm
     #fields = ('title', 'author', 'pdf', 'cover')
     success_url = reverse_lazy ('class_book_list')
     template_name = 'upload_book.html'
+
 
 def signup(request):
     if request.method == "POST":

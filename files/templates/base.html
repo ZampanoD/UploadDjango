@@ -23,10 +23,11 @@
             <a class="nav-link" href="{% url 'home' %}">Home</a>
           {%if user.is_authenticated%}  
             
- 
+        {% if request.user.is_staff or request.user.is_superuser %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'upload' %}">SimpleUpload</a>
           </li>
+         {% endif %}
             <li class="nav-item">
             <a class="nav-link" href="{% url 'book_list' %}">BookList</a>
           </li>
