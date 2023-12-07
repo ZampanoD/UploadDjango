@@ -5,6 +5,7 @@ from django.shortcuts import redirect
 from .forms import BookForm
 from .models import Book
 from django.urls import reverse_lazy
+from django.contrib.auth.forms import UserCreationForm
 
 
 class Home(TemplateView):
@@ -61,3 +62,14 @@ class UploadBookView(CreateView):
     success_url = reverse_lazy ('class_book_list')
     template_name = 'upload_book.html'
 
+def signup(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('book_list')
+    else:    
+        form = UserCreationForm()
+    return render(request, 'registration/signup.html', {
+        'form': form
+    })

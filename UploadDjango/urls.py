@@ -3,6 +3,8 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import include
+
 
 
 urlpatterns = [
@@ -15,7 +17,10 @@ urlpatterns = [
     path('books/', views.book_list, name='book_list'),
     path('class/books/upload/', views.UploadBookView.as_view(), name='class_upload_book'),
     path('books/<int:pk>/', views.delete_book, name='delete_book'),
+    path('signup/', views.signup, name = 'signup'),
+    path('accounts/', include('django.contrib.auth.urls')),
 ]
+
 
 
 if settings.DEBUG:
