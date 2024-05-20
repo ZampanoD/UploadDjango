@@ -21,8 +21,7 @@ def book_list(request):
         books = Book.objects.filter(title__icontains=query)
     else:
         books = Book.objects.all()
-    paginator = Paginator(books, 1
-                          )
+    paginator = Paginator(books, 2)
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
